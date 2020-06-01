@@ -181,6 +181,17 @@ return [
         Increment\Messenger\MessengerServiceProvider::class,
         Increment\Payment\PaymentServiceProvider::class,
 
+
+        Increment\Imarket\Bundled\BundledServiceProvider::class,
+        // Increment\Imarket\Coupon\CouponServiceProvider::class,
+        Increment\Imarket\Cart\CartServiceProvider::class,
+        Increment\Imarket\Merchant\MerchantServiceProvider::class,
+        Increment\Imarket\Product\ProductServiceProvider::class,
+        Increment\Imarket\Shipping\ShippingServiceProvider::class,
+        Increment\Imarket\Installment\InstallmentServiceProvider::class,
+        Increment\Imarket\Rental\RentalServiceProvider::class,
+        // Increment\Imarket\Wishlist\WishlistServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
