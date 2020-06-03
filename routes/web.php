@@ -304,3 +304,8 @@ Route::post($route.'update', $controller."update");
 // Route::post($route.'retrieve', $controller."retrieve");
 // Route::post($route.'delete', $controller."delete");
 // Route::post($route.'update', $controller."update");
+
+//Google Places Controller
+$route = env('PACKAGE_ROUTE', '').'/google_places/';
+$controller = 'GooglePlaceController@';
+Route::post($route.'search', $controller."search");
