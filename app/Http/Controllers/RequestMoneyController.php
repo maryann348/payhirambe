@@ -36,7 +36,7 @@ class RequestMoneyController extends APIController
       $this->localization();
     	$this->model = new RequestMoney();
       $this->notRequired = array(
-        'approved_date', 'months_payable', 'interest', 'reason', 'billing_per_month', 'max_charge'
+        'approved_date', 'months_payable', 'interest', 'reason', 'billing_per_month', 'max_charge', 'attachment_payload', 'attachment_value'
       );
     }
 
@@ -65,7 +65,7 @@ class RequestMoneyController extends APIController
           );
           app($this->notificationClass)->createByParams($parameter);
         }
-        if(sizeof($data['images']) > 0){
+        if(isset($data['images'])){
           app($this->requestImageClass)->insert($data['images'], $this->response['data']);
         }
       }else{
@@ -311,7 +311,8 @@ class RequestMoneyController extends APIController
       $result = array();
       $size = array();
 
-      $accountLocation = app('App\Http\Controllers\InvestorLocationController')->getByParams('account_id', $data['account_id']);
+      // $accountLocation = app('App\Http\Controllers\InvestorLocationController')->getByParams('account_id', $data['account_id']);
+      $accountLocation = null;
       $response = array();
 
       if($accountLocation == null){

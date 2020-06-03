@@ -14,7 +14,8 @@ class UpdateRequestsTableAddAttachments extends Migration
     public function up()
     {
         Schema::table('requests', function (Blueprint $table) {
-            //
+            $table->string('attachment_payload')->after('max_charge')->nullable();
+            $table->string('attachment_value')->after('attachment_payload')->nullable();
         });
     }
 
