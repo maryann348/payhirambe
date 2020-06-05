@@ -17,6 +17,7 @@ class LedgerController extends APIController
     public $notificationClass = 'Increment\Common\Notification\Http\NotificationController';
     public $depositClass = 'App\Http\Controllers\DepositController';
     public $withdrawalClass = 'App\Http\Controllers\WithdrawController';
+    public $installmentRequestClass = 'Increment\Imarket\Installment\Http\InstallmentRequestController';
     public $requestClass = 'App\Http\Controllers\RequestMoneyController';
     public function dashboard($accountId){
       return array(
@@ -27,6 +28,7 @@ class LedgerController extends APIController
         'personal_total_requests' => app('App\Http\Controllers\RequestMoneyController')->getTotalActiveRequest($accountId),
         'request_status' => app('App\Http\Controllers\RequestMoneyController')->requestStatus($accountId),
         'withdrawal'  => app($this->withdrawalClass)->getByParams('account_id', $accountId),
+        'installment_request'  => app($this->installmentRequestClass)->getByParams('account_id', $accountId),
         'currency' => 'PHP'
       );
     }
