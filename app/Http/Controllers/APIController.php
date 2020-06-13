@@ -32,6 +32,7 @@ class APIController extends Controller
   protected $foreignTable = [];
   protected $editableForeignTable = array();
   protected $requiredForeignTable = array();
+  protected $codeSource = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   protected $response = array(
       "data" => null,
       "error" => array(),// {status, message}
