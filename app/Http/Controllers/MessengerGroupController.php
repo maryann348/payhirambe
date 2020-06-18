@@ -148,7 +148,12 @@ class MessengerGroupController extends APIController
       }else{
         $messengerGroup = null;
       }
-    } 
+    }
+
+    public function getByParamsTwoColumns($column1, $value1, $column2, $value2){
+      $result = MessengerGroup::where($column1, '=', $value1)->where($column2, '=', $value2)->get();
+      return sizeof($result) > 0 ? $result[0] : null;
+    }
 
     public function manageResult($result, $accountId, $title){
       $result['id'] = intval($result['id']);
