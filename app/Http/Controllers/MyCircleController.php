@@ -24,7 +24,7 @@ class MyCircleController extends APIController
                    'code' => $this->generateCode(),
                    'account_id'	=> $data['account_id'],
                    'account'	=> $receipient[0]->id,
-                   'status'	=> 'sent'
+                   'status'	=> 'pending'
                );
                $this->model = new MyCircle();
                $this->insertDB($insertData);
@@ -77,8 +77,43 @@ class MyCircleController extends APIController
       }
    }
 
-   public function generateLink(){
-      $this->response["link"] = $this->generateCode();
-      return $this->response();
+   public function retrieve(Request $request){
+      $data = $request->all();
+      $this->retrieveDB($data);
+      $i = 0;
+      $result = $this->response['data'];
+      foreach ($result as $key) {
+            unset($result[$i]['created_at']);
+            unset($result[$i]['updated_at']);
+            unset($result[$i]['deleted_at']);
+            $result[$i]['account'] = $this->retrieveName($key['account']);
+            $result[$i]['status'] = $key['status'];
+            $result[$i]['account_id'] = $key['account_id'];
+            $i++;
+         $this->response['data'] = $result;
+      }
+      return $this->response;
    }
+
+   public function retrieveName($accountId){
+      $result = app('Increment\Account\Http\AccountController')->retrieveById($accountId);
+      if(sizeof($result) > 0){
+        $result[0]['information'] = app('Increment\Account\Http\AccountInformationController')->getAccountInformation($accountId);
+        if($result[0]['information'] != null && $result[0]['information']['first_name'] != null && $result[0]['information']['last_name'] != null){
+          $account = array(
+            'names' => $result[0]['information']['first_name'].' '.$result[0]['information']['last_name'],
+            'email' => $result[0]['email']
+          );
+          return $account;
+        }
+        $account = array(
+          'names' => $result[0]['username'],
+          'email' => $result[0]['email']
+        );
+        return $account;
+      }else{
+        return null;
+      }
+    }
+
 }
