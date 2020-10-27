@@ -309,3 +309,13 @@ Route::post($route.'update', $controller."update");
 $route = env('PACKAGE_ROUTE', '').'/google_places/';
 $controller = 'GooglePlaceController@';
 Route::post($route.'search', $controller."search");
+
+
+// MyCircles Controller
+$route = env('PACKAGE_ROUTE', '').'/my_circle/';
+$controller = 'MyCircleController@';
+Route::post($route.'create', $controller."create");
+Route::post($route.'retrieve', $controller."retrieve");
+Route::post($route.'validate', $controller."retrieveByValidation");
+Route::post($route.'delete', $controller."delete");
+Route::post($route.'update', $controller."update");
