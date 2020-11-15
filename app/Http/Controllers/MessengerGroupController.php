@@ -18,6 +18,8 @@ class MessengerGroupController extends APIController
     public $ratingClass = 'Increment\Common\Rating\Http\RatingController';
     public $requestClass = 'App\Http\Controllers\RequestMoneyController';
     public $requestPeerClass = 'App\Http\Controllers\RequestPeerController';
+    public $installmentClass = 'Increment\Imarket\Installment\Http\InstallmentRequestController';
+    public $rentalClass = 'Increment\Imarket\Rental\Http\RentalController';
     public $messengerMessagesClass = 'Increment\Messenger\Http\MessengerMessageController';
     function __construct(){
       if($this->checkAuthenticatedUser() == false){
@@ -139,7 +141,7 @@ class MessengerGroupController extends APIController
       if(sizeof($result) > 0){
         $result = $result[0];
         $messengerGroup = $result;
-        $request = app($this->requestClass)->getByParams('id', $result['payload']);
+        $request = app($this->requestClass)->getByParams('code', $result['payload']);
         $messengerGroup['created_at_human'] = Carbon::createFromFormat('Y-m-d H:i:s', $result['updated_at'] != null ?  $result['updated_at'] : $result['created_at'])->copy()->tz($this->response['timezone'])->format('F j, Y h:i A');
         $messengerGroup['validations'] = app($this->requestValidationClass)->getByParams('request_id', $result['payload'], $request['type']);
         $messengerGroup['rating'] = app($this->ratingClass)->getByParams($accountId, 'request', $result['payload']);
@@ -171,11 +173,21 @@ class MessengerGroupController extends APIController
       }else{
         $result['title'] = $this->retrieveAccountDetails($result['account_id']);
       }
-      $result['request'] = app($this->requestClass)->getByParams('id', $result['payload']);
-      $result['validations'] = app($this->requestValidationClass)->getByParams('request_id', $result['payload'], $result['request']['type']);
-      $result['peer'] = app($this->requestPeerClass)->getApprovedByParams('request_id', $result['payload']);
+      // $result['request'] = null;
+      // $result['validations'] = null;
+      // $result['peer'] = null;
+      // $result['rating'] = null;
+      // if($result['payload'] == 'request'){
+      //   $result['request'] = app($this->requestClass)->getByParams('code', $title);
+      //   $result['validations'] = app($this->requestValidationClass)->getByParams('request_id', $$result['request']['id'], $result['request']['type']);
+      //   $result['peer'] = app($this->requestPeerClass)->getApprovedByParams('request_id', $$result['request']['id']);
+      //   $result['rating'] = app($this->ratingClass)->getByParams($accountId, 'request', $$result['request']['id']);
+      // }else if($result['payload'] == 'installment'){
+      //   $result['request'] = app($this->installmentClass)->getByParamsRoot('code', $title);
+      // }else if($result['payload'] == 'rental'){
+      //   $result['request'] = app($this->rentalClass)->getByParamsRoot('code', $title);
+      // }
       $result['thread'] = $title;
-      $result['rating'] = app($this->ratingClass)->getByParams($accountId, 'request', $result['payload']);
       $result['total_unread_messages'] = app($this->messengerMessagesClass)->getTotalUnreadMessages($result['id'], $accountId);
       $result['new'] = false;
       return $result;
