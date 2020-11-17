@@ -180,18 +180,13 @@ return [
         Increment\Common\Invitation\InvitationServiceProvider::class,
         Increment\Common\Scope\ScopeServiceProvider::class,
         Increment\Messenger\MessengerServiceProvider::class,
-        Increment\Payment\PaymentServiceProvider::class,
 
-
-        Increment\Imarket\Bundled\BundledServiceProvider::class,
         // Increment\Imarket\Coupon\CouponServiceProvider::class,
-        Increment\Imarket\Cart\CartServiceProvider::class,
         Increment\Imarket\Merchant\MerchantServiceProvider::class,
-        Increment\Imarket\Product\ProductServiceProvider::class,
-        Increment\Imarket\Shipping\ShippingServiceProvider::class,
-        Increment\Imarket\Installment\InstallmentServiceProvider::class,
-        Increment\Imarket\Rental\RentalServiceProvider::class,
-        // Increment\Imarket\Wishlist\WishlistServiceProvider::class,
+        Increment\Imarket\Location\LocationServiceProvider::class,
+
+        Increment\Finance\FinanceServiceProvider::class,
+        Increment\Finance\Transfer\TransferServiceProvider::class,
 
         /*
          * Application Service Providers...

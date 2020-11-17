@@ -87,6 +87,20 @@ class APIController extends Controller
     //     }
     //     return true;
     //   }
+    //   if(isset($_SERVER['HTTP_REFERER']) && !in_array($_SERVER['HTTP_REFERER'], $this->whiteListedDomain)){
+    //     $this->response['error'] = array(
+    //       'message' => 'Invalid Domain!',
+    //       'status'  => 404
+    //     );
+    //     return false;
+    //   }
+    //   if(isset($_SERVER['HTTP_ORIGIN']) && !in_array($_SERVER['HTTP_ORIGIN'], $this->whiteListedDomainOrigin)){
+    //     $this->response['error'] = array(
+    //       'message' => 'Invalid Domain!',
+    //       'status'  => 404
+    //     );
+    //     return false;
+    //   }
     //   try {
     //     $user = JWTAuth::parseToken()->authenticate();
     //     return true;
@@ -177,7 +191,6 @@ class APIController extends Controller
     if($this->checkAuthenticatedUser() == false){
       return $this->response();
     }
-
     $this->retrieveDB($request->all());
     return $this->response();
   }
@@ -403,6 +416,7 @@ class APIController extends Controller
       if(isset($request['with_soft_delete'])){
         $this->model = $this->model->withTrashed();
       }
+
       for($x = 0; $x < count($tableColumns); $x++){
         $tableColumns[$x] = $tableName.'.'.$tableColumns[$x];
       }
@@ -431,9 +445,6 @@ class APIController extends Controller
         $condition["clause"] = (isset($condition["clause"])) ? $condition["clause"] : "=";
         $condition["value"] = (isset($condition["value"])) ? $condition["value"] : null;
         switch($condition["clause"]){
-          case 'or':
-            $this->model = $this->model->orWhere($condition["column"], '=', $condition["value"]);
-            break;
           default :
             $this->model = $this->model->where($condition["column"], $condition["clause"], $condition["value"]);
         }
@@ -591,6 +602,31 @@ class APIController extends Controller
     }
   }
 
+  public function retrieveAppDetails($result, $accountId){
+    $result['rating'] = app('Increment\Common\Rating\Http\RatingController')->getRatingByPayload('profile', $accountId);
+    $result['cards'] = app('App\Http\Controllers\AccountCardController')->getByParams('account_id', $accountId, 'ADMIN');
+    $result['works'] = app('App\Http\Controllers\WorkController')->getByParams('account_id', $accountId);
+    $result['guarantors'] = app('App\Http\Controllers\GuarantorController')->getByParams('sender', $accountId);
+    $result['educations'] = app('App\Http\Controllers\EducationController')->getByParams('account_id', $accountId);
+    return $result;
+  }
+
+  public function retrieveDetailsOnLogin($result){
+    $accountId = $result['id'];
+    $result['account_information_flag'] = false;
+    $result['account_profile_flag'] = false;
+    $result['account_information'] = app('Increment\Account\Http\AccountInformationController')->getAccountInformation($accountId);
+    $result['account_profile'] = app('Increment\Account\Http\AccountProfileController')->getAccountProfile($accountId);
+    $result['notification_settings'] = app('App\Http\Controllers\NotificationSettingController')->getNotificationSettings($accountId);
+    $result['sub_account'] = app('Increment\Account\Http\SubAccountController')->retrieveByParams('member', $accountId);
+
+    if($result['sub_account'] != null){
+      $admin = $result['sub_account']['account_id'];
+      $result['sub_account']['merchant'] = app('Increment\Imarket\Merchant\Http\MerchantController')->getByParams('account_id', $admin);
+    }
+    return $result;
+  }
+
   public function retrieveAccountDetailsProfileOnly($accountId){
     $result = app('Increment\Account\Http\AccountController')->retrieveById($accountId);
     if(sizeof($result) > 0){
@@ -604,42 +640,6 @@ class APIController extends Controller
     }else{
       return null;
     }
-  }
-
-  public function retrieveNameOnly($accountId){
-    $result = app('Increment\Account\Http\AccountController')->retrieveById($accountId);
-    if(sizeof($result) > 0){
-      $result[0]['information'] = app('Increment\Account\Http\AccountInformationController')->getAccountInformation($accountId);
-      $name = null;
-      if($result[0]['information'] != null && $result[0]['information']['first_name'] !== null && $result[0]['information']['last_name'] != null){
-        $name = $result[0]['information']['first_name'].' '.$result[0]['information']['last_name'];
-        return $name;
-      }
-      return $result[0]['username'];
-    }else{
-      return null;
-    }
-  }
-
-  public function retrieveAppDetails($result, $accountId){
-    return $result;
-  }
-
-  public function retrieveDetailsOnLogin($result){
-    $accountId = $result['id'];
-    $result['account_information_flag'] = false;
-    $result['account_profile_flag'] = false;
-    $result['account_information'] = app('Increment\Account\Http\AccountInformationController')->getAccountInformation($accountId);
-    $result['account_profile'] = app('Increment\Account\Http\AccountProfileController')->getAccountProfile($accountId);
-    $result['notification_settings'] = app('App\Http\Controllers\NotificationSettingController')->getNotificationSettings($accountId);
-    $result['sub_account'] = app('Increment\Account\Http\SubAccountController')->retrieveByParams('member', $accountId);
-    $result['cart'] = app('Increment\Imarket\Cart\Http\CartController')->retrieveByAccountId($accountId);
-
-    if($result['sub_account'] != null){
-      $admin = $result['sub_account']['account_id'];
-      $result['sub_account']['merchant'] = app('Increment\Imarket\Merchant\Http\MerchantController')->getByParams('account_id', $admin);
-    }
-    return $result;
   }
 
 }

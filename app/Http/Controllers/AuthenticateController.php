@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuthExceptions\JWTException;
 use Illuminate\Support\Facades\Validator;
-
 use App\UserAuth;
 use Increment\Account\Models\Account;
 use App\LoginLogger;
@@ -27,6 +25,16 @@ class AuthenticateController extends Controller
     $users = UserAuth::all();
     return $users;
   }
+
+  public function broadcastAuth(Request $request){
+    $data = $request->all();
+    $user = UserAuth::where('id', '=', $data['account_id'])->get();
+    if(sizeof($user) > 0){
+      return response()->json(true);
+    }
+    return response()->json(['error' => 'invalid_credentials'], 401); 
+  }
+
   public function refreshToken(){
     // config/jwt.php ttl to change token life
     // if ($token = JWTAuth::parseToken()->refresh()){
@@ -38,16 +46,11 @@ class AuthenticateController extends Controller
   }
   public function authenticate(Request $request)
   {
-      
     $data = $request->all();
     $text = array('email' => $data['username']);
-    $account = Account::where('username', '=', $data['username'])->value('account_type');
-    // var_dump($account);
+
     $credentials = null;
     $result = null;
-    if($account == 'USER' || $account == 'PARTNER'){
-      return response()->json(['error' => 'invalid_credentials'], 401);
-    }else{
     if($this->customValidate($text) == true){        
       $credentials = array("email" => $data['username'], 'password' => $data['password']);
       // $result = Account::where('email', '=', $data['username'])->get();
@@ -58,14 +61,12 @@ class AuthenticateController extends Controller
       $result = Account::whereRaw("BINARY username='".$data["username"]."'")->get();
     }
     if(sizeof($result) > 0){
-      app('App\Http\Controllers\NotificationSettingController')->manageNotification($result[0]['id']);
+      // app('App\Http\Controllers\NotificationSettingController')->manageNotification($result[0]['id']);
     }
-    
     try {
       // verify the credentials and create a token for the user
       if (! $token = JWTAuth::attempt($credentials)) {
           return response()->json(['error' => 'invalid_credentials'], 401);
-        
       }
     } catch (JWTException $e) {
       // something went wrong
@@ -88,8 +89,6 @@ class AuthenticateController extends Controller
     }else{
       //
     }
-  }
-
     return response()->json(compact('token'));
   }
   public function deauthenticate(){
@@ -111,6 +110,9 @@ class AuthenticateController extends Controller
       }
 
       // the token is valid and we have found the user via the sub claim
+      if($user){
+        $user['scope_location'] = app('Increment\Imarket\Location\Http\LocationController')->getColumnValueByParams('account_id', $user['id'], 'code');
+      }
       return response()->json($user);
   }
   public function customValidate($text){
@@ -125,5 +127,24 @@ class AuthenticateController extends Controller
     }
     else
       return true;
+  }
+
+
+  public function test(){
+    return "Here";
+  }
+
+  public function googleLogin(){
+    $CLIENT_ID = "110121744042-m2q8b6gjnor8q8njmu1dkgtsieek9as2.apps.googleusercontent.com";
+    $client = new Google_Client(['client_id' => $CLIENT_ID]);  // Specify the CLIENT_ID of the app that accesses the backend
+    $payload = $client->verifyIdToken($id_token);
+    return $payload;
+    if ($payload) {
+      $userid = $payload['sub'];
+      // If request specified a G Suite domain:
+      //$domain = $payload['hd'];
+    } else {
+      // Invalid ID token
+    }
   }
 }

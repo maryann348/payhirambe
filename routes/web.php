@@ -80,6 +80,11 @@ Route::post($route.'/auth', function () {
     return true;
 });
 
+// Google Place
+$route = env('PACKAGE_ROUTE', '').'/google_places/';
+$controller = 'GooglePlaceController@';
+Route::post($route.'search', $controller."search");
+
 //Emails Controller
 $route = env('PACKAGE_ROUTE', '').'/emails';
 Route::post($route.'/create', "EmailController@create");
@@ -132,14 +137,9 @@ Route::post($route.'update', $controller."update");
 // Ledger
 $route = env('PACKAGE_ROUTE', '').'/ledgers/';
 $controller = 'LedgerController@';
-Route::post($route.'create', $controller."create");
-Route::post($route.'retrieve', $controller."retrieve");
 Route::post($route.'dashboard', $controller."dashboard");
 Route::post($route.'create_on_deposit', $controller."createOnDeposit");
 Route::post($route.'create_on_withdrawal', $controller."createOnWithdrawal");
-Route::post($route.'summary', $controller."summary");
-Route::post($route.'delete', $controller."delete");
-Route::post($route.'update', $controller."update");
 
 // Investment
 $route = env('PACKAGE_ROUTE', '').'/investments/';
@@ -199,15 +199,6 @@ Route::post($route.'retrieve', $controller."retrieve");
 Route::post($route.'delete', $controller."delete");
 Route::post($route.'update', $controller."update");
 
-//Deposit
-$route = env('PACKAGE_ROUTE', '').'/deposits/';
-$controller = 'DepositController@';
-Route::post($route.'create', $controller."create");
-Route::post($route.'retrieve', $controller."retrieve");
-Route::post($route.'retrieve_by_confirmation', $controller."retrieveByConfirmation");
-Route::post($route.'delete', $controller."delete");
-Route::post($route.'update', $controller."update");
-
 // Certificates
 $route = env('PACKAGE_ROUTE', '').'/certificates/';
 $controller = 'CertificateController@';
@@ -216,13 +207,6 @@ Route::post($route.'retrieve', $controller."retrieve");
 Route::post($route.'delete', $controller."delete");
 Route::post($route.'update', $controller."update");
 
-//Deposit
-$route = env('PACKAGE_ROUTE', '').'/deposit_attachments/';
-$controller = 'DepositAttachmentController@';
-Route::post($route.'create', $controller."create");
-Route::post($route.'retrieve', $controller."retrieve");
-Route::post($route.'delete', $controller."delete");
-Route::post($route.'update', $controller."update");
 
 //Withdraw
 $route = env('PACKAGE_ROUTE', '').'/withdrawals/';
@@ -279,23 +263,6 @@ Route::post($route.'create', $controller."create");
 Route::post($route.'retrieve', $controller."retrieve");
 Route::post($route.'update', $controller."update");
 Route::post($route.'delete', $controller."delete");
-
-//Investor Location Controller
-$route = env('PACKAGE_ROUTE', '').'/investor_locations/';  
-$controller = 'InvestorLocationController@';
-Route::post($route.'create', $controller."create");
-Route::post($route.'retrieve', $controller."retrieve");
-Route::post($route.'update', $controller."update");
-Route::post($route.'delete', $controller."delete");
-
-//Coupon Controller
-$route = env('PACKAGE_ROUTE', '').'/coupons/';
-$controller = 'CouponController@';
-Route::post($route.'create', $controller."create");
-Route::post($route.'retrieve', $controller."retrieve");
-Route::post($route.'validate', $controller."retrieveByValidation");
-Route::post($route.'delete', $controller."delete");
-Route::post($route.'update', $controller."update");
 
 //Account Coupon Controller
 // $route = env('PACKAGE_ROUTE', '').'/account_coupons/';

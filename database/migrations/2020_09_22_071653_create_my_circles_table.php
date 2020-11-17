@@ -14,7 +14,7 @@ class CreateMyCirclesTable extends Migration
     public function up()
     {
         Schema::create('my_circles', function (Blueprint $table) {
-            $table->bigIncrement('id');
+            $table->bigIncrements('id');
             $table->string('code');
             $table->bigInteger('account_id');
             $table->bigInteger('account');

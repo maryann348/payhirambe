@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Ledger;
+
+use Increment\Finance\Models\Ledger;
 use Carbon\Carbon;
 class LedgerController extends APIController
 {
