@@ -51,7 +51,8 @@
             "Increment\\Imarket\\Shipping\\": "packages/increment/imarket/shipping/src/",
             "Increment\\Imarket\\Wishlist\\": "packages/increment/imarket/wishlist/src/",
             "Increment\\Imarket\\Installment\\": "packages/increment/imarket/installment/src/",
-            "Increment\\Imarket\\Rental\\": "packages/increment/imarket/rental/src/"
+            "Increment\\Imarket\\Rental\\": "packages/increment/imarket/rental/src/",
+            "Increment\\Common\\Scope\\": "packages/increment/common/scope/src/"
         }
     },
     "autoload-dev": {
