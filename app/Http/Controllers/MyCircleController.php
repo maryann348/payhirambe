@@ -55,7 +55,7 @@ class MyCircleController extends APIController
    }
 
 	public function generateCode(){
-      $code = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 64);
+      $code = "cir_".substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 60);
       $codeExist = MyCircle::where('id', '=', $code)->get();
       if(sizeof($codeExist) > 0){
         $this->generateCode();

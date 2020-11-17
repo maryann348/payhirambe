@@ -41,9 +41,13 @@ class AuthenticateController extends Controller
       
     $data = $request->all();
     $text = array('email' => $data['username']);
-
+    $account = Account::where('username', '=', $data['username'])->value('account_type');
+    // var_dump($account);
     $credentials = null;
     $result = null;
+    if($account == 'USER' || $account == 'PARTNER'){
+      return response()->json(['error' => 'invalid_credentials'], 401);
+    }else{
     if($this->customValidate($text) == true){        
       $credentials = array("email" => $data['username'], 'password' => $data['password']);
       // $result = Account::where('email', '=', $data['username'])->get();
@@ -56,10 +60,12 @@ class AuthenticateController extends Controller
     if(sizeof($result) > 0){
       app('App\Http\Controllers\NotificationSettingController')->manageNotification($result[0]['id']);
     }
+    
     try {
       // verify the credentials and create a token for the user
       if (! $token = JWTAuth::attempt($credentials)) {
           return response()->json(['error' => 'invalid_credentials'], 401);
+        
       }
     } catch (JWTException $e) {
       // something went wrong
@@ -82,6 +88,8 @@ class AuthenticateController extends Controller
     }else{
       //
     }
+  }
+
     return response()->json(compact('token'));
   }
   public function deauthenticate(){

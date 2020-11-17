@@ -14,13 +14,13 @@ class CreateMyCirclesTable extends Migration
     public function up()
     {
         Schema::create('my_circles', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrement('id');
             $table->string('code');
             $table->bigInteger('account_id');
             $table->bigInteger('account');
-            $table->string('status');
-            $table->softDeletes();
+            $table->string('status')->default('pending');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
