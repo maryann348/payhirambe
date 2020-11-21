@@ -633,7 +633,6 @@ class APIController extends Controller
     $result['account_profile'] = app('Increment\Account\Http\AccountProfileController')->getAccountProfile($accountId);
     $result['notification_settings'] = app('App\Http\Controllers\NotificationSettingController')->getNotificationSettings($accountId);
     $result['sub_account'] = app('Increment\Account\Http\SubAccountController')->retrieveByParams('member', $accountId);
-    $result['cart'] = app('Increment\Imarket\Cart\Http\CartController')->retrieveByAccountId($accountId);
 
     if($result['sub_account'] != null){
       $admin = $result['sub_account']['account_id'];
