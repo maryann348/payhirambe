@@ -358,8 +358,8 @@ class RequestMoneyController extends APIController
           if($peerApproved == false || $data['value'] == $result[$i]['code'].'%'){
             $invested = app($this->investmentClass)->invested($result[$i]['id']);
             $amount = floatval($result[$i]['amount']);
-            // $result[$i]['location'] = app($this->requestLocationClass)->getByParams('request_id', $result[$i]['id']);
-            // $result[$i]['peers'] = app($this->requestPeerClass)->getByParams('request_id', $result[$i]['id']);
+            $result[$i]['location'] = app($this->requestLocationClass)->getByParams('request_id', $result[$i]['id']);
+            $result[$i]['peers'] = app($this->requestPeerClass)->getByParams('request_id', $result[$i]['id']);
             $result[$i]['images'] = app($this->requestImageClass)->getByParams('request_id', $result[$i]['id']);
             $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
             // $result[$i]['pulling'] = app($this->pullingClass)->getTotalByParams('request_id', $result[$i]['id']);
@@ -378,7 +378,7 @@ class RequestMoneyController extends APIController
             // $result[$i]['pulling_percentage'] = intval(($result[$i]['pulling'] /  $result[$i]['initial_amount']) * 100);
             $result[$i]['billing_per_month_human'] = $this->billingPerMonth($result[$i]['billing_per_month']);
             // $result[$i]['bookmark'] = (app($this->bookmarkClass)->checkIfExist($data['account_id'], $result[$i]['id']) == null) ? false : true;
-            // $result[$i]['coupon'] = app($this->couponAccountClass)->getByAccountIdAndPayload($result[$i]['account_id'], 'request',  $result[$i]['id']);
+            $result[$i]['coupon'] = app($this->couponAccountClass)->getByAccountIdAndPayload($result[$i]['account_id'], 'request',  $result[$i]['id']);
             // $result[$i]['coupon'] = null;
             $response[] = $result[$i];
           }  
