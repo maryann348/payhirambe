@@ -26,7 +26,7 @@ class RequestMoneyController extends APIController
     public $requestPeerClass = 'App\Http\Controllers\RequestPeerController';
     public $ledgerClass = 'App\Http\Controllers\LedgerController';
     public $messengerGroupClass = 'App\Http\Controllers\MessengerGroupController';
-    // public $couponAccountClass = 'App\Http\Controllers\CouponAccountController';
+    public $couponAccountClass = 'App\Http\Controllers\CouponAccountController';
     public $requestData = null;
     public $chargeData = null;
     function __construct(){
@@ -379,7 +379,7 @@ class RequestMoneyController extends APIController
             $result[$i]['billing_per_month_human'] = $this->billingPerMonth($result[$i]['billing_per_month']);
             // $result[$i]['bookmark'] = (app($this->bookmarkClass)->checkIfExist($data['account_id'], $result[$i]['id']) == null) ? false : true;
             $result[$i]['coupon'] = app($this->couponAccountClass)->getByAccountIdAndPayload($result[$i]['account_id'], 'request',  $result[$i]['id']);
-            // $result[$i]['coupon'] = null;
+            $result[$i]['coupon'] = null;
             $response[] = $result[$i];
           }  
           $i++;
