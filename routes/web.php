@@ -137,6 +137,7 @@ Route::post($route.'update', $controller."update");
 // Ledger
 $route = env('PACKAGE_ROUTE', '').'/ledgers/';
 $controller = 'LedgerController@';
+Route::post($route.'summary', $controller."summary");
 Route::post($route.'dashboard', $controller."dashboard");
 Route::post($route.'create_on_deposit', $controller."createOnDeposit");
 Route::post($route.'create_on_withdrawal', $controller."createOnWithdrawal");
@@ -273,9 +274,9 @@ Route::post($route.'delete', $controller."delete");
 // Route::post($route.'update', $controller."update");
 
 //Google Places Controller
-$route = env('PACKAGE_ROUTE', '').'/google_places/';
-$controller = 'GooglePlaceController@';
-Route::post($route.'search', $controller."search");
+// $route = env('PACKAGE_ROUTE', '').'/google_places/';
+// $controller = 'GooglePlaceController@';
+// Route::post($route.'search', $controller."search");
 
 
 // MyCircles Controller
