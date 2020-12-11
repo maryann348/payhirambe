@@ -359,10 +359,10 @@ class RequestMoneyController extends APIController
             $invested = app($this->investmentClass)->invested($result[$i]['id']);
             $amount = floatval($result[$i]['amount']);
             $result[$i]['location'] = app($this->requestLocationClass)->getByParams('request_id', $result[$i]['id']);
-            $result[$i]['peers'] = $data['routeParams'] ? app($this->requestPeerClass)->getByParams('request_id', $result[$i]['id']) : null;
+            $result[$i]['peers'] = isset($data['route_params']) ? app($this->requestPeerClass)->getByParams('request_id', $result[$i]['id']) : null;
             $result[$i]['images'] = app($this->requestImageClass)->getByParams('request_id', $result[$i]['id']);
             $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
-            if($data['accountParamater']){
+            if(isset($data['account_paramater'])){
                 // $result[$i]['pulling'] = app($this->pullingClass)->getTotalByParams('request_id', $result[$i]['id']);
                 $result[$i]['account'] =  $this->retrieveAccountDetails($result[$i]['account_id']);
                 $result[$i]['works'] = app($this->workClass)->getByParams('account_id', $result[$i]['account_id']);
