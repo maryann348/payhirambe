@@ -591,6 +591,33 @@ class APIController extends Controller
     }
   }
 
+
+  public function retrieveUserInfoLimited($accountId){
+    $result = app('Increment\Account\Http\AccountController')->retrieveById($accountId);
+    if(sizeof($result) > 0){
+      $result[0]['information'] = app('Increment\Account\Http\AccountInformationController')->getAccountInformation($accountId);
+      $profile =  app('Increment\Account\Http\AccountProfileController')->getAccountProfile($accountId);
+      $name = null;
+      if($result[0]['information'] != null && $result[0]['information']['first_name'] !== null && $result[0]['information']['last_name'] != null){
+        $name = $result[0]['information']['first_name'].' '.$result[0]['information']['last_name'];
+        return array(
+          'name'  => $name,
+          'profile'   => $profile ? array(
+            'url' =>  $profile['url']
+          ) : null
+        );
+      }
+      return array(
+        'username'  => $result[0]['username'],
+        'profile'   => $profile ? array(
+          'url' =>  $profile['url']
+        ) : null
+      );
+    }else{
+      return null;
+    }
+  }
+  
   public function retrieveAccountDetailsProfileOnly($accountId){
     $result = app('Increment\Account\Http\AccountController')->retrieveById($accountId);
     if(sizeof($result) > 0){

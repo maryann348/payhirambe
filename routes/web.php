@@ -265,6 +265,16 @@ Route::post($route.'retrieve', $controller."retrieve");
 Route::post($route.'update', $controller."update");
 Route::post($route.'delete', $controller."delete");
 
+//Coupon Controller
+$route = env('PACKAGE_ROUTE', '').'/coupons/';
+$controller = 'CouponController@';
+Route::post($route.'create', $controller."create");
+Route::post($route.'retrieve', $controller."retrieve");
+Route::post($route.'validate', $controller."retrieveByValidation");
+Route::post($route.'delete', $controller."delete");
+Route::post($route.'update', $controller."update");
+
+
 //Account Coupon Controller
 // $route = env('PACKAGE_ROUTE', '').'/account_coupons/';
 // $controller = 'WithdrawController@';

@@ -317,8 +317,11 @@ class RequestMoneyController extends APIController
       $response = array();
 
       if($accountLocation == null){
-        $result = RequestMoney::where('status', '=', 0)->where($data['column'], 'like', $data['value'])->offset($data['offset'])->limit($data['limit'])->orderBy($data['sort']['column'], $data['sort']['value'])->get();
+        $result = RequestMoney::where('status', '=', 0)->where($data['column'], 'like', $data['value'])->offset($data['offset'])->limit($data['limit'])->orderBy($data['sort']['column'], $data['sort']['value'])->get(['id','account_id', 'code', 'type', 'money_type', 'currency',
+        'amount', 'interest', 'months_payable', 'reason', 'needed_on', 'billing_per_month', 'max_charge', 'attachment_payload', 'status', 'approved_date', 'created_at']);
+        // $result = RequestMoney::where('status', '=', 0)->where($data['column'], 'like', $data['value'])->offset($data['offset'])->limit($data['limit'])->orderBy($data['sort']['column'], $data['sort']['value'])->get();
         $size = RequestMoney::where('status', '=', 0)->where($data['column'], 'like', $data['value'])->orderBy($data['sort']['column'], $data['sort']['value'])->get();
+        // dd($result);
       }else{
         $result = DB::table('request_locations as T1')
           ->join('requests as T2', 'T2.id', '=', 'T1.request_id')
@@ -330,8 +333,10 @@ class RequestMoneyController extends APIController
           ->orderBy('T2.'.$data['sort']['column'], $data['sort']['value'])
           ->offset($data['offset'])
           ->limit($data['limit'])
-          ->select('T2.*')
+          ->select('T2.id', 'T2.code', 'T2.account_id', 'T2.type', 'T2.money_type', 'T2.currency', 'T2.amount', 'T2.interest', 'T2.month_payable', 'T2.reason', 'T2.needed_on', 'T2.billing_per_month', 'T2.max_charge'
+          , 'T2.attachment_payload', 'T2.approved_date')
           ->get();
+        // dd($result);
         $result = json_decode($result, true);
 
         $size = DB::table('request_locations as T1')
@@ -354,25 +359,35 @@ class RequestMoneyController extends APIController
             $invested = app($this->investmentClass)->invested($result[$i]['id']);
             $amount = floatval($result[$i]['amount']);
             $result[$i]['location'] = app($this->requestLocationClass)->getByParams('request_id', $result[$i]['id']);
-            $result[$i]['peers'] = app($this->requestPeerClass)->getByParams('request_id', $result[$i]['id']);
+            $result[$i]['peers'] = isset($data['route_params']) ? app($this->requestPeerClass)->getByParams('request_id', $result[$i]['id']) : null;
             $result[$i]['images'] = app($this->requestImageClass)->getByParams('request_id', $result[$i]['id']);
             $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
-            $result[$i]['pulling'] = app($this->pullingClass)->getTotalByParams('request_id', $result[$i]['id']);
-            $result[$i]['account'] = $this->retrieveAccountDetails($result[$i]['account_id']);
-            $result[$i]['works'] = app($this->workClass)->getByParams('account_id', $result[$i]['account_id']);
-            $result[$i]['cards'] = app($this->cardClass)->getByParams('account_id', $result[$i]['account_id'], $data['type']);
-            $result[$i]['guarantors'] = app($this->guarantorClass)->getByParams('sender', $result[$i]['account_id']);
-            $result[$i]['educations'] = app($this->educationClass)->getByParams('account_id', $result[$i]['account_id']);
-            $result[$i]['comakers'] = app($this->comakerClass)->getByParams($result[$i]['account_id'], $result[$i]['id']);
+            if(isset($data['account_paramater'])){
+                // $result[$i]['pulling'] = app($this->pullingClass)->getTotalByParams('request_id', $result[$i]['id']);
+                $result[$i]['account'] =  $this->retrieveAccountDetails($result[$i]['account_id']);
+                $result[$i]['works'] = app($this->workClass)->getByParams('account_id', $result[$i]['account_id']);
+                $result[$i]['cards'] = app($this->cardClass)->getByParams('account_id', $result[$i]['account_id'], $data['type']);
+                $result[$i]['guarantors'] = app($this->guarantorClass)->getByParams('sender', $result[$i]['account_id']);
+                $result[$i]['educations'] = app($this->educationClass)->getByParams('account_id', $result[$i]['account_id']);
+                $result[$i]['comakers'] = app($this->comakerClass)->getByParams($result[$i]['account_id'], $result[$i]['id']);
+            }else{
+              // $result[$i]['pulling'] = app($this->pullingClass)->getTotalByParams('request_id', $result[$i]['id']);
+              $result[$i]['account'] =  $this->retrieveUserInfoLimited($result[$i]['account_id']);
+              // $result[$i]['works'] = app($this->workClass)->getByParams('account_id', $result[$i]['account_id']);
+              // $result[$i]['cards'] = app($this->cardClass)->getByParams('account_id', $result[$i]['account_id'], $data['type']);
+              // $result[$i]['guarantors'] = app($this->guarantorClass)->getByParams('sender', $result[$i]['account_id']);
+              // $result[$i]['educations'] = app($this->educationClass)->getByParams('account_id', $result[$i]['account_id']);
+              // $result[$i]['comakers'] = app($this->comakerClass)->getByParams($result[$i]['account_id'], $result[$i]['id']);
+            }
             $result[$i]['created_at_human'] = Carbon::createFromFormat('Y-m-d H:i:s', $result[$i]['created_at'])->copy()->tz($this->response['timezone'])->format('F j, Y h:i A');
             $result[$i]['needed_on_human'] = Carbon::createFromFormat('Y-m-d', $result[$i]['needed_on'])->copy()->tz($this->response['timezone'])->format('F j, Y'); // should not have a time
             $result[$i]['total'] = $this->getTotalBorrowed($result[$i]['account_id']);
             $result[$i]['initial_amount'] = $result[$i]['amount'];
             $result[$i]['amount'] = $amount - $invested['total'];
             $result[$i]['invested'] = $invested['size'];
-            $result[$i]['pulling_percentage'] = intval(($result[$i]['pulling'] /  $result[$i]['initial_amount']) * 100);
+            // $result[$i]['pulling_percentage'] = intval(($result[$i]['pulling'] /  $result[$i]['initial_amount']) * 100);
             $result[$i]['billing_per_month_human'] = $this->billingPerMonth($result[$i]['billing_per_month']);
-            $result[$i]['bookmark'] = (app($this->bookmarkClass)->checkIfExist($data['account_id'], $result[$i]['id']) == null) ? false : true;
+            // $result[$i]['bookmark'] = (app($this->bookmarkClass)->checkIfExist($data['account_id'], $result[$i]['id']) == null) ? false : true;
             // $result[$i]['coupon'] = app($this->couponAccountClass)->getByAccountIdAndPayload($result[$i]['account_id'], 'request',  $result[$i]['id']);
             $result[$i]['coupon'] = null;
             $response[] = $result[$i];
