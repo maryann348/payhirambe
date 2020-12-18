@@ -317,40 +317,76 @@ class RequestMoneyController extends APIController
       $response = array();
 
       if($accountLocation == null){
+        if(!isset($data['route_params'])){
         $result = RequestMoney::where('status', '=', 0)->where($data['column'], 'like', $data['value'])->offset($data['offset'])->limit($data['limit'])->orderBy($data['sort']['column'], $data['sort']['value'])->get(['id','account_id', 'code', 'type', 'money_type', 'currency',
         'amount', 'interest', 'months_payable', 'reason', 'needed_on', 'billing_per_month', 'max_charge', 'attachment_payload', 'status', 'approved_date', 'created_at']);
-        // $result = RequestMoney::where('status', '=', 0)->where($data['column'], 'like', $data['value'])->offset($data['offset'])->limit($data['limit'])->orderBy($data['sort']['column'], $data['sort']['value'])->get();
         $size = RequestMoney::where('status', '=', 0)->where($data['column'], 'like', $data['value'])->orderBy($data['sort']['column'], $data['sort']['value'])->get();
+      }else{
+          $result = RequestMoney::where('status', '=', 0)->where('id', '=', $data['route_params'])->where($data['column'], 'like', $data['value'])->offset($data['offset'])->limit($data['limit'])->orderBy($data['sort']['column'], $data['sort']['value'])->get(['id','account_id', 'code', 'type', 'money_type', 'currency',
+          'amount', 'interest', 'months_payable', 'reason', 'needed_on', 'billing_per_month', 'max_charge', 'attachment_payload', 'status', 'approved_date', 'created_at']);
+          $size = RequestMoney::where('status', '=', 0)->where('id', '=', $data['route_params'])->where($data['column'], 'like', $data['value'])->orderBy($data['sort']['column'], $data['sort']['value'])->get();
+        }
+        // $result = RequestMoney::where('status', '=', 0)->where($data['column'], 'like', $data['value'])->offset($data['offset'])->limit($data['limit'])->orderBy($data['sort']['column'], $data['sort']['value'])->get();
         // dd($result);
       }else{
-        $result = DB::table('request_locations as T1')
-          ->join('requests as T2', 'T2.id', '=', 'T1.request_id')
-          ->where('T2.status', '=', 0)
-          ->where('T1.country', '=', $accountLocation['country'])
-          // ->where('T1.region', '=', $accountLocation['region'])
-          ->whereIn('T1.locality', $accountLocation['locality'])
-          ->where('T2.'.$data['column'], 'like', $data['value'])
-          ->orderBy('T2.'.$data['sort']['column'], $data['sort']['value'])
-          ->offset($data['offset'])
-          ->limit($data['limit'])
-          ->select('T2.id', 'T2.code', 'T2.account_id', 'T2.type', 'T2.money_type', 'T2.currency', 'T2.amount', 'T2.interest', 'T2.month_payable', 'T2.reason', 'T2.needed_on', 'T2.billing_per_month', 'T2.max_charge'
-          , 'T2.attachment_payload', 'T2.approved_date')
-          ->get();
-        // dd($result);
-        $result = json_decode($result, true);
+        if(!isset($data['route_params'])){
+          $result = DB::table('request_locations as T1')
+            ->join('requests as T2', 'T2.id', '=', 'T1.request_id')
+            ->where('T2.status', '=', 0)
+            ->where('T1.country', '=', $accountLocation['country'])
+            // ->where('T1.region', '=', $accountLocation['region'])
+            ->whereIn('T1.locality', $accountLocation['locality'])
+            ->where('T2.'.$data['column'], 'like', $data['value'])
+            ->orderBy('T2.'.$data['sort']['column'], $data['sort']['value'])
+            ->offset($data['offset'])
+            ->limit($data['limit'])
+            ->select('T2.id', 'T2.code', 'T2.account_id', 'T2.type', 'T2.money_type', 'T2.currency', 'T2.amount', 'T2.interest', 'T2.month_payable', 'T2.reason', 'T2.needed_on', 'T2.billing_per_month', 'T2.max_charge'
+            , 'T2.attachment_payload', 'T2.approved_date')
+            ->get();
+          // dd($result);
+          $result = json_decode($result, true);
 
-        $size = DB::table('request_locations as T1')
-          ->join('requests as T2', 'T2.id', '=', 'T1.request_id')
-          ->where('T2.status', '=', 0)
-          ->where('T1.country', '=', $accountLocation['country'])
-          // ->where('T1.region', '=', $accountLocation['region'])
-          ->whereIn('T1.locality', $accountLocation['locality'])
-          ->where('T2.'.$data['column'], 'like', $data['value'])
-          ->orderBy('T2.'.$data['sort']['column'], $data['sort']['value'])
-          ->select('T2.*')
-          ->get();
+          $size = DB::table('request_locations as T1')
+            ->join('requests as T2', 'T2.id', '=', 'T1.request_id')
+            ->where('T2.status', '=', 0)
+            ->where('T1.country', '=', $accountLocation['country'])
+            // ->where('T1.region', '=', $accountLocation['region'])
+            ->whereIn('T1.locality', $accountLocation['locality'])
+            ->where('T2.'.$data['column'], 'like', $data['value'])
+            ->orderBy('T2.'.$data['sort']['column'], $data['sort']['value'])
+            ->select('T2.*')
+            ->get();
+        }else{
+          $result = DB::table('request_locations as T1')
+            ->join('requests as T2', 'T2.id', '=', 'T1.request_id')
+            ->where('T2.id', '=', $data['route_params'])
+            ->where('T2.status', '=', 0)
+            ->where('T1.country', '=', $accountLocation['country'])
+            // ->where('T1.region', '=', $accountLocation['region'])
+            ->whereIn('T1.locality', $accountLocation['locality'])
+            ->where('T2.'.$data['column'], 'like', $data['value'])
+            ->orderBy('T2.'.$data['sort']['column'], $data['sort']['value'])
+            ->offset($data['offset'])
+            ->limit($data['limit'])
+            ->select('T2.id', 'T2.code', 'T2.account_id', 'T2.type', 'T2.money_type', 'T2.currency', 'T2.amount', 'T2.interest', 'T2.month_payable', 'T2.reason', 'T2.needed_on', 'T2.billing_per_month', 'T2.max_charge'
+            , 'T2.attachment_payload', 'T2.approved_date')
+            ->get();
+          // dd($result);
+          $result = json_decode($result, true);
+
+          $size = DB::table('request_locations as T1')
+            ->join('requests as T2', 'T2.id', '=', 'T1.request_id')
+            ->where('T2.id', '=', $data['route_params'])
+            ->where('T2.status', '=', 0)
+            ->where('T1.country', '=', $accountLocation['country'])
+            // ->where('T1.region', '=', $accountLocation['region'])
+            ->whereIn('T1.locality', $accountLocation['locality'])
+            ->where('T2.'.$data['column'], 'like', $data['value'])
+            ->orderBy('T2.'.$data['sort']['column'], $data['sort']['value'])
+            ->select('T2.*')
+            ->get();
+        }
       }
-      
       if(sizeof($result) > 0){
         $i = 0;
         foreach ($result as $key) {
