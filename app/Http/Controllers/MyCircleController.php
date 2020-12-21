@@ -86,9 +86,10 @@ class MyCircleController extends APIController
             unset($result[$i]['created_at']);
             unset($result[$i]['updated_at']);
             unset($result[$i]['deleted_at']);
-            $result[$i]['account'] = $this->retrieveName($key['account']);
+            // $result[$i]['account'] = $this->retrieveName($key['account']);
             $result[$i]['status'] = $key['status'];
             $result[$i]['account_id'] = $key['account_id'];
+            $result[$i]['account'] = $this->retrieveAccountDetails($key['account_id']);
             $i++;
          $this->response['data'] = $result;
       }
