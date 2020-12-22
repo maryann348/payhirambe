@@ -16,11 +16,11 @@ class MyCircleController extends APIController
     
     public function create(Request $request){
     $data = $request->all();
-         $receipient = null;
+         $recipient = null;
          if(isset($data['to_email'])){
-            $receipient = Account::where('email', '=', $data['to_email'])->get();
+            $recipient = Account::where('email', '=', $data['to_email'])->get();
          }else{
-            $receipient = Account::where('code', '=', $data['to_code'])->get();
+            $recipient = Account::where('code', '=', $data['to_code'])->get();
          }
          $exist = $this->checkIfExist($data['to_email']);
             if($exist == false){
@@ -28,7 +28,7 @@ class MyCircleController extends APIController
                $insertData = array(
                   'code' => $this->generateCode(),
                   'account_id'	=> $data['account_id'],
-                  'account'	=> $receipient[0]['id'],
+                  'account'	=> $recipient[0]['id'],
                   'status'	=> 'pending'
                );
                $this->model = new MyCircle();
