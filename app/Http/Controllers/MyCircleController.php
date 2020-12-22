@@ -16,15 +16,20 @@ class MyCircleController extends APIController
     
     public function create(Request $request){
     $data = $request->all();
-         $receipient = Account::where('email', '=', $data['to_email'])->get();
+         $recipient = null;
+         if(isset($data['to_email'])){
+            $recipient = Account::where('email', '=', $data['to_email'])->get();
+         }else{
+            $recipient = Account::where('code', '=', $data['to_code'])->get();
+         }
          $exist = $this->checkIfExist($data['to_email']);
             if($exist == false){
                $user = $this->retrieveAccountDetails($data['account_id']);
                $insertData = array(
-                   'code' => $this->generateCode(),
-                   'account_id'	=> $data['account_id'],
-                   'account'	=> $receipient[0]->id,
-                   'status'	=> 'pending'
+                  'code' => $this->generateCode(),
+                  'account_id'	=> $data['account_id'],
+                  'account'	=> $recipient[0]['id'],
+                  'status'	=> 'pending'
                );
                $this->model = new MyCircle();
                $this->insertDB($insertData);
