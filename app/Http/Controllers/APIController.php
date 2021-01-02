@@ -61,6 +61,8 @@ class APIController extends Controller
     'com.payhiram',
     'http://localhost:8001'
   );
+  
+  protected $currency = array('PHP');
 
   protected $notRequired = array();
   protected $responseType = 'json'; 
