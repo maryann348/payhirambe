@@ -96,7 +96,7 @@ class MyCircleController extends APIController
             // $result[$i]['account'] = $this->retrieveName($key['account']);
             $result[$i]['status'] = $key['status'];
             $result[$i]['account_id'] = $key['account_id'];
-            $result[$i]['account'] = $this->retrieveUserInfoLimited($result[$i]['account_id']);
+            $result[$i]['account'] = $this->retrieveAccountDetails($result[$i]['account_id']);
             $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
             $i++;
          $this->response['data'] = $result;
