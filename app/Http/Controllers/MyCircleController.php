@@ -10,21 +10,28 @@ use App\Http\Controllers\EmailController;
 use Mail;
 class MyCircleController extends APIController
 {
+   public $ratingClass = 'Increment\Common\Rating\Http\RatingController';
+
     function __construct(){
 		$this->model = new MyCircle();
     }
     
     public function create(Request $request){
     $data = $request->all();
-         $receipient = Account::where('email', '=', $data['to_email'])->get();
+         $recipient = null;
+         if(isset($data['to_email'])){
+            $recipient = Account::where('email', '=', $data['to_email'])->get();
+         }else{
+            $recipient = Account::where('code', '=', $data['to_code'])->get();
+         }
          $exist = $this->checkIfExist($data['to_email']);
             if($exist == false){
                $user = $this->retrieveAccountDetails($data['account_id']);
                $insertData = array(
-                   'code' => $this->generateCode(),
-                   'account_id'	=> $data['account_id'],
-                   'account'	=> $receipient[0]->id,
-                   'status'	=> 'pending'
+                  'code' => $this->generateCode(),
+                  'account_id'	=> $data['account_id'],
+                  'account'	=> $recipient[0]['id'],
+                  'status'	=> 'pending'
                );
                $this->model = new MyCircle();
                $this->insertDB($insertData);
@@ -86,9 +93,11 @@ class MyCircleController extends APIController
             unset($result[$i]['created_at']);
             unset($result[$i]['updated_at']);
             unset($result[$i]['deleted_at']);
-            $result[$i]['account'] = $this->retrieveName($key['account']);
+            // $result[$i]['account'] = $this->retrieveName($key['account']);
             $result[$i]['status'] = $key['status'];
             $result[$i]['account_id'] = $key['account_id'];
+            $result[$i]['account'] = $this->retrieveAccountDetails($result[$i]['account_id']);
+            $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
             $i++;
          $this->response['data'] = $result;
       }

@@ -28,6 +28,9 @@ class APIController extends Controller
     Company: Payhiram
     Website: www.payhiram.ph
   */
+  public $educationClass = 'App\Http\Controllers\EducationController';
+  public $ratingClass = 'Increment\Common\Rating\Http\RatingController';
+
   protected $model = NULL;
   protected $foreignTable = [];
   protected $editableForeignTable = array();
@@ -58,6 +61,8 @@ class APIController extends Controller
     'com.payhiram',
     'http://localhost:8001'
   );
+  
+  protected $currency = array('PHP');
 
   protected $notRequired = array();
   protected $responseType = 'json'; 
@@ -616,6 +621,14 @@ class APIController extends Controller
     }else{
       return null;
     }
+  }
+
+  public function retrieveProfileDetails($accountId){
+    return array(
+      'account' => $this->retrieveAccountDetails($accountId),
+      'rating' => app($this->ratingClass)->getRatingByPayload('profile', $accountId),
+      'educations' => app($this->educationClass)->getByParams('account_id', $accountId),
+    );
   }
   
   public function retrieveAccountDetailsProfileOnly($accountId){
