@@ -398,7 +398,7 @@ class RequestMoneyController extends APIController
             $result[$i]['peers'] = isset($data['route_params']) ? app($this->requestPeerClass)->getByParams('request_id', $result[$i]['id']) : null;
             $result[$i]['images'] = app($this->requestImageClass)->getByParams('request_id', $result[$i]['id']);
             $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
-            if(isset($data['account_paramater'])){
+            // if(isset($data['account_paramater'])){
                 // $result[$i]['pulling'] = app($this->pullingClass)->getTotalByParams('request_id', $result[$i]['id']);
                 $result[$i]['account'] =  $this->retrieveAccountDetails($result[$i]['account_id']);
                 $result[$i]['works'] = app($this->workClass)->getByParams('account_id', $result[$i]['account_id']);
@@ -406,15 +406,15 @@ class RequestMoneyController extends APIController
                 $result[$i]['guarantors'] = app($this->guarantorClass)->getByParams('sender', $result[$i]['account_id']);
                 $result[$i]['educations'] = app($this->educationClass)->getByParams('account_id', $result[$i]['account_id']);
                 $result[$i]['comakers'] = app($this->comakerClass)->getByParams($result[$i]['account_id'], $result[$i]['id']);
-            }else{
+            // }else{
               // $result[$i]['pulling'] = app($this->pullingClass)->getTotalByParams('request_id', $result[$i]['id']);
-              $result[$i]['account'] =  $this->retrieveUserInfoLimited($result[$i]['account_id']);
+              // $result[$i]['account'] =  $this->retrieveUserInfoLimited($result[$i]['account_id']);
               // $result[$i]['works'] = app($this->workClass)->getByParams('account_id', $result[$i]['account_id']);
               // $result[$i]['cards'] = app($this->cardClass)->getByParams('account_id', $result[$i]['account_id'], $data['type']);
               // $result[$i]['guarantors'] = app($this->guarantorClass)->getByParams('sender', $result[$i]['account_id']);
               // $result[$i]['educations'] = app($this->educationClass)->getByParams('account_id', $result[$i]['account_id']);
               // $result[$i]['comakers'] = app($this->comakerClass)->getByParams($result[$i]['account_id'], $result[$i]['id']);
-            }
+            // }
             $result[$i]['created_at_human'] = Carbon::createFromFormat('Y-m-d H:i:s', $result[$i]['created_at'])->copy()->tz($this->response['timezone'])->format('F j, Y h:i A');
             $result[$i]['needed_on_human'] = Carbon::createFromFormat('Y-m-d', $result[$i]['needed_on'])->copy()->tz($this->response['timezone'])->format('F j, Y'); // should not have a time
             $result[$i]['total'] = $this->getTotalBorrowed($result[$i]['account_id']);
