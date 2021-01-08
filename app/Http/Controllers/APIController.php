@@ -596,6 +596,19 @@ class APIController extends Controller
     }
   }
 
+  public function retrieveFullAccountDetails($accountId){
+    $result = app('Increment\Account\Http\AccountController')->retrieveById($accountId);
+    if(sizeof($result) > 0){
+      $result[0]['profile'] =  app('Increment\Account\Http\AccountProfileController')->getAccountProfile($accountId);
+      $result[0]['information'] = app('Increment\Account\Http\AccountInformationController')->getAccountInformation($accountId);
+      $result[0]['billing'] = app('Increment\Account\Http\BillingInformationController')->getBillingInformation($accountId);
+      $result[0]['education'] = app('App\Http\Controllers\EducationController')->getByParams('account_id', $accountId);
+      $result[0]['cards'] = app('App\Http\Controllers\AccountCardController')->getByParams('account_id', $accountId);
+      return $result[0];
+    }else{
+      return null;
+    }
+  }
 
   public function retrieveUserInfoLimited($accountId){
     $result = app('Increment\Account\Http\AccountController')->retrieveById($accountId);
