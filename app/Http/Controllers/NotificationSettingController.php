@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\NotificationSetting;
+use App\Http\Controllers\LedgerController;
 use Carbon\Carbon;
 class NotificationSettingController extends APIController
 {
@@ -102,6 +103,67 @@ class NotificationSettingController extends APIController
             'updated_at' => Carbon::now()
           ));
         }
+      }
+    }else{
+      $code = $this->otpCodeGenerator();
+      $insertData = array(
+        'code'        => $code,
+        'account_id'  => $data['account_id'],
+        'email_login' => 0,
+        'email_otp'   => 0,
+        'email_pin'   => 0,
+        'sms_login'   => 0,
+        'sms_otp'     => 0,
+        'created_at'  => Carbon::now()
+      );
+      NotificationSetting::insert($insertData);
+      app('App\Http\Controllers\EmailController')->otpEmailFundTransfer($data['account_id'], $code);
+    }
+    
+    return response()->json(array(
+      'error' => $error,
+      'attempt' => 0,
+      'timestamps' => Carbon::now()
+    ));
+    
+  }
+
+  public function generateOTPMobile(Request $request){
+    $data = $request->all();
+    $error = null;
+    $previous = NotificationSetting::where('account_id', '=', $data['account_id'])->get();
+    $balance = Ledger::where('account_id', '=', $data['account_id'])->get();
+    if(sizeof($previous) > 0){
+      if($balance[0]['amount'] > $data['amount']){
+        if($previous[0]['code'] != 'BLOCKED'){
+          if($previous[0]['code'] == $data['code']){
+            $code = $this->otpCodeGenerator();
+            NotificationSetting::where('account_id', '=', $data['account_id'])->update(array(
+              'code' => $code,
+              'updated_at' => Carbon::now()
+            ));
+            app('App\Http\Controllers\EmailController')->otpEmailFundTransfer($data['account_id'], $code);
+          }else{
+            $error = "Your input code does not match.";
+          }
+        }else{
+          $currentDate = Carbon::now();
+          $blockedDate = Carbon::createFromFormat('Y-m-d H:i:s', $previous[0]['updated_at']);
+          $diff = $currentDate->diffInMinutes($blockedDate);
+          if($diff < env('OTP_BLOCK_LIMIT')){
+            $error = "Your account still blocked! Please wait for 30 minutes.";
+          }else{
+            $error = null;
+            $code = $this->otpCodeGenerator();
+            NotificationSetting::where('account_id', '=', $data['account_id'])->update(array(
+              'code' => $code,
+              'updated_at' => Carbon::now()
+            ));
+          }
+        }
+      }else{
+        // check difference in updated
+        $error = "You have no enough balance";  
       }
     }else{
       $code = $this->otpCodeGenerator();

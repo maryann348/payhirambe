@@ -104,6 +104,7 @@ $controller = 'NotificationSettingController@';
 Route::post($route.'create', $controller."create");
 Route::post($route.'retrieve', $controller."retrieve");
 Route::post($route.'update_otp', $controller."generateOTP");
+Route::post($route.'update_otp_mobile', $controller."generateOTPMobile");
 Route::post($route.'block_account', $controller."blockedAccount");
 Route::post($route.'update', $controller."update");
 Route::post($route.'delete', $controller."delete");
