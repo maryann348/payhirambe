@@ -80,6 +80,7 @@ class RequestPeerController extends APIController
     $status = false;
     foreach ($result as $key) {
       $result[$i]['account'] = $this->retrieveAccountDetails($key->account_id);
+      $result[$i]['distance'] = '12km';
       $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
       if($status == false && $key->status == 'approved'){
         $status = true;
