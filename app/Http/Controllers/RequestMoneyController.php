@@ -309,6 +309,7 @@ class RequestMoneyController extends APIController
 
     public function retrieveItem(Request $request){
       $data = $request->all();
+      $this->retrieveDB($data);
       $result = $this->response['data'];
       if(sizeof($result) > 0){
         $i = 0;
