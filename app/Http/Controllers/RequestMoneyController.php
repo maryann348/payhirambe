@@ -314,6 +314,7 @@ class RequestMoneyController extends APIController
       if(sizeof($result) > 0){
         $i = 0;
         foreach ($result as $key) {
+          $this->response['data'][$i]['account'] =  $this->retrieveAccountDetails($result[$i]['account_id']);
           $this->response['data'][$i]['peers'] = app($this->requestPeerClass)->getByParams('request_id', $result[$i]['id']);
           $this->response['data'][$i]['images'] = app($this->requestImageClass)->getByParams('request_id', $result[$i]['id']);
           $this->response['data'][$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
