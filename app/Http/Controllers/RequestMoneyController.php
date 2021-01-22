@@ -307,6 +307,11 @@ class RequestMoneyController extends APIController
       app($this->ledgerClass)->processPayment($ledgerData, $email, $notification);
     }
 
+    public function retrieveItem(Request $request){
+      $data = $request->all();
+      return $this->response();
+    }
+
     public function retrieve(Request $request){
     	$data = $request->all();
       $result = array();

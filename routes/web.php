@@ -121,6 +121,7 @@ $route = env('PACKAGE_ROUTE', '').'/requests/';
 $controller = 'RequestMoneyController@';
 Route::post($route.'create', $controller."create");
 Route::post($route.'retrieve', $controller."retrieve");
+Route::post($route.'retrieve_item', $controller."retrieveItem");
 Route::post($route.'payments', $controller."payments");
 Route::post($route.'manage_request_by_thread', $controller."manageRequestByThread");
 Route::post($route.'delete', $controller."delete");
