@@ -314,20 +314,15 @@ class RequestMoneyController extends APIController
       if(sizeof($result) > 0){
         $i = 0;
         foreach ($result as $key) {
-          $peerApproved = app($this->requestPeerClass)->checkIfApproved($result[$i]['id']);
-          if($peerApproved == false || $data['value'] == $result[$i]['code'].'%'){
-            $invested = app($this->investmentClass)->invested($result[$i]['id']);
-            $amount = floatval($result[$i]['amount']);
-            $result[$i]['peers'] = isset($data['route_params']) ? app($this->requestPeerClass)->getByParams('request_id', $result[$i]['id']) : null;
-            $result[$i]['images'] = app($this->requestImageClass)->getByParams('request_id', $result[$i]['id']);
-            $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
-            $result[$i]['created_at_human'] = Carbon::createFromFormat('Y-m-d H:i:s', $result[$i]['created_at'])->copy()->tz($this->response['timezone'])->format('F j, Y h:i A');
-            $result[$i]['needed_on_human'] = Carbon::createFromFormat('Y-m-d', $result[$i]['needed_on'])->copy()->tz($this->response['timezone'])->format('F j, Y'); // should not have a time
-            $result[$i]['total'] = $this->getTotalBorrowed($result[$i]['account_id']);
-            $result[$i]['initial_amount'] = $result[$i]['amount'];
-            $result[$i]['coupon'] = null;
-            $response[] = $result[$i];
-          }  
+          $result[$i]['peers'] = app($this->requestPeerClass)->getByParams('request_id', $result[$i]['id']);
+          $result[$i]['images'] = app($this->requestImageClass)->getByParams('request_id', $result[$i]['id']);
+          $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
+          $result[$i]['created_at_human'] = Carbon::createFromFormat('Y-m-d H:i:s', $result[$i]['created_at'])->copy()->tz($this->response['timezone'])->format('F j, Y h:i A');
+          $result[$i]['needed_on_human'] = Carbon::createFromFormat('Y-m-d', $result[$i]['needed_on'])->copy()->tz($this->response['timezone'])->format('F j, Y'); // should not have a time
+          $result[$i]['total'] = $this->getTotalBorrowed($result[$i]['account_id']);
+          $result[$i]['initial_amount'] = $result[$i]['amount'];
+          $result[$i]['coupon'] = null;
+          $response[] = $result[$i];
           $i++;
         }
       }
