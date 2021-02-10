@@ -180,6 +180,7 @@ return [
         Increment\Common\Notification\NotificationServiceProvider::class,
         Increment\Common\Invitation\InvitationServiceProvider::class,
         Increment\Common\Scope\ScopeServiceProvider::class,
+        Increment\Common\Payload\PayloadServiceProvider::class,
         Increment\Messenger\MessengerServiceProvider::class,
 
         // Increment\Imarket\Coupon\CouponServiceProvider::class,
