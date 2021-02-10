@@ -163,17 +163,17 @@ class MessengerGroupController extends APIController
       $result['account_id'] = intval($result['account_id']);
       $result['account_details'] = $this->retrieveUserInfoLimited($result['account_id']);
       $result['created_at_human'] = Carbon::createFromFormat('Y-m-d H:i:s', $result['updated_at'] != null ?  $result['updated_at'] : $result['created_at'])->copy()->tz($this->response['timezone'])->format('F j, Y h:i A');
-      $result['members'] = $this->getMembers($result['id'], null);
-      $members = $result['members']['result'];
-      if(sizeof($members) > 0){
-        if(intval($accountId) == intval($members[0]['account_id'])){
-          $result['title'] = $this->retrieveUserInfoLimited($members[1]['account_id']);
-        }else{
-          $result['title'] = $this->retrieveUserInfoLimited($result['account_id']);
-        }
-      }else{
-        $result['title'] = $this->retrieveUserInfoLimited($result['account_id']);
-      }
+      // $result['members'] = $this->getMembers($result['id'], null);
+      // $members = $result['members']['result'];
+      // if(sizeof($members) > 0){
+      //   if(intval($accountId) == intval($members[0]['account_id'])){
+      //     $result['title'] = $this->retrieveUserInfoLimited($members[1]['account_id']);
+      //   }else{
+      //     $result['title'] = $this->retrieveUserInfoLimited($result['account_id']);
+      //   }
+      // }else{
+      //   $result['title'] = $this->retrieveUserInfoLimited($result['account_id']);
+      // }
       $result['request'] = null;
       // $result['validations'] = null;
       // $result['peer'] = null;
