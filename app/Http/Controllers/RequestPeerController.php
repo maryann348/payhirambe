@@ -74,6 +74,11 @@ class RequestPeerController extends APIController
     return sizeof($result) > 0 ? $result[0] : null;
   }
 
+  public function getApprovedByParamsPeersOnly($column, $value){
+    $result = RequestPeer::where($column, '=', $value)->where('status', '=', 'approved')->get();
+    return sizeof($result) > 0 ? $result[0] : null;
+  }
+
   public function getByParams($column, $value){
     $result = RequestPeer::where($column, '=', $value)->get();
     $i = 0;

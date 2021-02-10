@@ -163,40 +163,21 @@ class MessengerGroupController extends APIController
       $result['account_id'] = intval($result['account_id']);
       $result['account_details'] = $this->retrieveUserInfoLimited($result['account_id']);
       $result['created_at_human'] = Carbon::createFromFormat('Y-m-d H:i:s', $result['updated_at'] != null ?  $result['updated_at'] : $result['created_at'])->copy()->tz($this->response['timezone'])->format('F j, Y h:i A');
-      // $result['members'] = $this->getMembers($result['id'], null);
-      // $members = $result['members']['result'];
-      // if(sizeof($members) > 0){
-      //   if(intval($accountId) == intval($members[0]['account_id'])){
-      //     $result['title'] = $this->retrieveUserInfoLimited($members[1]['account_id']);
-      //   }else{
-      //     $result['title'] = $this->retrieveUserInfoLimited($result['account_id']);
-      //   }
-      // }else{
-      //   $result['title'] = $this->retrieveUserInfoLimited($result['account_id']);
-      // }
       $result['request'] = null;
-      // $result['validations'] = null;
-      // $result['peer'] = null;
-      // $result['rating'] = null;
       if($result['payload'] == 'request'){
-        $result['request'] = app($this->requestClass)->getByParams('code', $title);
-        // unset($result['request'])
-        // $result['validations'] = app($this->requestValidationClass)->getByParams('request_id', $$result['request']['id'], $result['request']['type']);
-        // $result['peer'] = app($this->requestPeerClass)->getApprovedByParams('request_id', $$result['request']['id']);
-        // $result['rating'] = app($this->ratingClass)->getByParams($accountId, 'request', $$result['request']['id']);
+        $request = app($this->requestClass)->getByParams('code', $title);
+        $partner = $request ? app($this->requestPeerClass)->getApprovedByParamsPeersOnly('request_id', $result['id']) : null;
+        if($request){
+          $request['partner'] = $partner;
+        }
+        $result['request'] = $request;
       }
-      // else if($result['payload'] == 'installment'){
-      //   $result['request'] = app($this->installmentClass)->getByParamsRoot('code', $title);
-      // }else if($result['payload'] == 'rental'){
-      //   $result['request'] = app($this->rentalClass)->getByParamsRoot('code', $title);
-      // }
       $result['thread'] = $title;
       $result['total_unread_messages'] = app($this->messengerMessagesClass)->getTotalUnreadMessages($result['id'], $accountId);
       $result['new'] = false;
       unset($result['updated_at']);
       unset($result['created_at']);
       unset($result['deleted_at']);
-      
       // dd($result);
       return $result;
     }
