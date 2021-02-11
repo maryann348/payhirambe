@@ -9,7 +9,7 @@ class FirebaseController extends APIController
 {
 	public $messaging;
   function __construct(){
-  	$factory = (new Factory)->withServiceAccount('C:\xampp\htdocs\project123\api\app\Http\Controllers\payhiram-firebase-adminsdk-nn06x-910d50fc3a.json');
+  	$factory = (new Factory)->withServiceAccount(app_path('http\controllers\payhiram-firebase-adminsdk-nn06x-910d50fc3a.json'));
   	$this->messaging = $factory->createMessaging();
   }
 
