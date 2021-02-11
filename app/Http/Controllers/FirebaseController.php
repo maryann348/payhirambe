@@ -24,5 +24,13 @@ class FirebaseController extends APIController
 		$this->messaging->send($message);
   }
 
+  public function sendLocal($data){
+  	$message = CloudMessage::fromArray([
+	    'topic' => $data['topic'],
+	    'notification' => $data['notification'], // optional
+	    'data' => $data['data'], // optional
+		]);
+		$this->messaging->send($message);
+  }
 
 }

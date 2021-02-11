@@ -11,6 +11,7 @@ use App\Events\Notifications as EventNotifications;
 use App\Events\Message;
 use App\Events\MessageGroup;
 use App\Events\SystemNotification;
+// use App\Http\Controllers\FirebaseController;
 use Pusher\Pusher;
 class Notifications implements ShouldQueue
 {
@@ -49,22 +50,35 @@ class Notifications implements ShouldQueue
      */
     public function handle()
     {
+      if(!env('FCM')){
         switch ($this->type) {
-            case 'message_group':
-                broadcast(new MessageGroup($this->data));
-                break;
-            case 'notifications':
-                broadcast(new EventNotifications($this->data));
-                break;
-            case 'message':
-                broadcast(new Message($this->data));
-                break;
-            case 'system_notification':
-                broadcast(new SystemNotification($this->data));
-                break;
-            default:
-                # code...
-                break;
-        }
+          case 'message_group':
+              broadcast(new MessageGroup($this->data));
+              break;
+          case 'notifications':
+              broadcast(new EventNotifications($this->data));
+              break;
+          case 'message':
+              broadcast(new Message($this->data));
+              break;
+          case 'system_notification':
+              broadcast(new SystemNotification($this->data));
+              break;
+          default:
+              # code...
+              break;
+        }            
+      }else{
+        $data = array(
+          'topic' => $this->type.'-'.$data['account_id'],
+          'data'  => $data,
+          'notification' => array(
+            'title' => 'Test',
+            'body'  => 'Another Test'
+          )
+        );
+        app('App\Http\Controllers\FirebaseController')->sendLocal($data);
+      }
+
     }
 }
