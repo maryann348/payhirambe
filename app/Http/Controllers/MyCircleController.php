@@ -90,16 +90,14 @@ class MyCircleController extends APIController
       $i = 0;
       $result = $this->response['data'];
       foreach ($result as $key) {
-            unset($result[$i]['created_at']);
-            unset($result[$i]['updated_at']);
-            unset($result[$i]['deleted_at']);
-            // $result[$i]['account'] = $this->retrieveName($key['account']);
-            $result[$i]['status'] = $key['status'];
-            $result[$i]['account_id'] = $key['account_id'];
-            $result[$i]['account'] = $this->retrieveFullAccountDetails($result[$i]['account_id']);
-            $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
-            $i++;
-         $this->response['data'] = $result;
+        $result[$i]['status'] = $key['status'];
+        $result[$i]['account_id'] = $key['account_id'];
+        $value = $data['condition'][0]['value'];
+        $accountId = $value == $result[$i]['account_id'] ? $key['account'] : $key['account_id'];
+        $result[$i]['account'] = $this->retrieveFullAccountDetails($accountId);
+        $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $accountId);
+        $i++;
+        $this->response['data'] = $result;
       }
       return $this->response;
    }
