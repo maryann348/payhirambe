@@ -34,7 +34,8 @@
     "autoload": {
         "classmap": [
             "database/seeds",
-            "database/factories"
+            "database/factories",
+            "packages/increment/common/rating/src/"
         ],
         "psr-4": {
             "App\\": "app/",
@@ -64,9 +65,6 @@
     "extra": {
         "laravel": {
             "dont-discover": [
-            ],
-            "providers": [
-                "Increment\\Account\\AccountServiceProvider"
             ]
         }
     },
