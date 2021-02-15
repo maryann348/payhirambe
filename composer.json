@@ -64,6 +64,9 @@
     "extra": {
         "laravel": {
             "dont-discover": [
+            ],
+            "providers": [
+                "Increment\\Account\\AccountServiceProvider"
             ]
         }
     },
