@@ -35,7 +35,22 @@
         "classmap": [
             "database/seeds",
             "database/factories",
-            "packages/increment/common/rating/src/"
+            "packages/increment/common/rating/src/",
+            "packages/increment/account/src/",
+            "packages/increment/common/comment/src/",
+            "packages/increment/common/image/src/",
+            "packages/increment/common/ticket/src/",
+            "packages/increment/common/payload/src/",
+            "packages/increment/common/invitation/src/",
+            "packages/increment/common/tutorial/src/",
+            "packages/increment/common/system/src/",
+            "packages/increment/messenger/src/",
+            "packages/increment/common/notification/src/",
+            "packages/increment/imarket/merchant/src/",
+            "packages/increment/imarket/location/src/",
+            "packages/increment/common/scope/src/",
+            "packages/increment/finance/src/",
+             "packages/increment/finance/transfer/src/"
         ],
         "psr-4": {
             "App\\": "app/",
