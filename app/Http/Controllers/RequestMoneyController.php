@@ -70,9 +70,9 @@ class RequestMoneyController extends APIController
         }
       }else{
         // add location
-        $data['location']['request_id'] = $this->response['data'];
-        $data['location']['created_at'] = Carbon::now();
-        app($this->requestLocationClass)->insert($data['location']);
+        // $data['location']['request_id'] = $this->response['data'];
+        // $data['location']['created_at'] = Carbon::now();
+        // app($this->requestLocationClass)->insert($data['location']);
         if($data['coupon'] != null){
           $couponData = array(
             'account_id'  => $data['account_id'],
