@@ -39,10 +39,10 @@
                 float: left;
             }
             .text-primary{
-                color:#005b96;   
+                color:#3F0050;   
             }
             .text-secondary{
-                color:#005b96;
+                color:#3F0050;
             }
             .text{
                 color: #555;
@@ -58,7 +58,7 @@
                 height: 200px;
                 width: 100%;
                 float: left;
-                background: #005b96;
+                background: #3F0050;
                 color: #fff;
                 text-align: center;
                 border-top-right-radius: 5px;
@@ -88,7 +88,7 @@
             .button{
                 width: 300px;
                 height: 50px;
-                background: #005b96;
+                background: #3F0050;
                 border: none;
                 color: #fff;
                 font-size: 16px;
@@ -114,6 +114,6 @@
     </head>
     <body>
 		<span class="header">
-		    <img src="{{env('APP_URL')}}{{env('PACKAGE_ROUTE')}}/storage/logo/logo.png" height="60px" width="60px">
+		    <img src="{{env('DOMAIN')}}{{env('PACKAGE_ROUTE')}}/storage/logo/logo.png" height="60px" width="60px">
 		    <span><label class="text-secondary">{{env('APP_NAME')}}</label></span>
 		</span>

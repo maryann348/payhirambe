@@ -534,8 +534,8 @@ class RequestMoneyController extends APIController
       return doubleval($result);
     }
 
-    public function getTotalActiveRequest($accountId){
-      $result = RequestMoney::where('account_id', '=', $accountId)->where('status', '!', 2)->sum('amount');
+    public function getTotalActiveRequest($accountId, $currency){
+      $result = RequestMoney::where('account_id', '=', $accountId)->where('currency', '=', $currency)->where('status', '!', 2)->sum('amount');
       return doubleval($result);
     }
 
