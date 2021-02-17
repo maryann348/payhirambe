@@ -34,6 +34,16 @@ class MessengerGroupController extends APIController
 
       $creator = intval($data['creator']);
       $memberData = intval($data['member']);
+      $result = $this->getByParams('title', $data['title']);
+
+      if($result != null){
+        $this->response['error'] = array(
+          'message' => 'Already exist!',
+          'status'  => 'duplicate'
+        );
+        return $this->response();
+      }
+      
       $this->model = new MessengerGroup();
       $insertData = array(
         'account_id'  => $creator,
@@ -217,6 +227,11 @@ class MessengerGroupController extends APIController
           $title = $this->retrieveAccountDetails($result[0]['account_id']);
       }
       return ($title) ? $title : null;
+    }
+
+    public function getByParams($column, $value){
+      $result = MessengerMember::where($column, '=', $value)->get();
+      return sizeof($result) > 0 ? $result[0] : null;
     }
 
     public function getPartner($username){
