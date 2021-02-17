@@ -78,7 +78,7 @@ class AuthenticateController extends Controller
     if(sizeof($result) > 0){
       $notifResult = NotificationSetting::where('account_id', '=', $result[0]['id'])->get();
       if(sizeof($notifResult) > 0){
-        if($notifResult[0]['email'] === 1){
+        if($notifResult[0]['email_login'] === 1){
           // Notify via email
           // dispatch(new Email($result[0], 'login'));
           app('App\Http\Controllers\EmailController')->loginEmail($result[0]['id']);
