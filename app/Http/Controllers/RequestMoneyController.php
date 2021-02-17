@@ -36,7 +36,7 @@ class RequestMoneyController extends APIController
       $this->localization();
     	$this->model = new RequestMoney();
       $this->notRequired = array(
-        'approved_date', 'months_payable', 'interest', 'reason', 'billing_per_month', 'max_charge', 'attachment_payload', 'attachment_value'
+        'approved_date', 'months_payable', 'interest', 'reason', 'billing_per_month', 'max_charge', 'attachment_payload', 'attachment_value', 'location_id'
       );
     }
 
@@ -70,9 +70,9 @@ class RequestMoneyController extends APIController
         }
       }else{
         // add location
-        $data['location']['request_id'] = $this->response['data'];
-        $data['location']['created_at'] = Carbon::now();
-        app($this->requestLocationClass)->insert($data['location']);
+        // $data['location']['request_id'] = $this->response['data'];
+        // $data['location']['created_at'] = Carbon::now();
+        // app($this->requestLocationClass)->insert($data['location']);
         if($data['coupon'] != null){
           $couponData = array(
             'account_id'  => $data['account_id'],
