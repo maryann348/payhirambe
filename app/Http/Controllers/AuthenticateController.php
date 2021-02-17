@@ -10,6 +10,8 @@ use App\UserAuth;
 use Increment\Account\Models\Account;
 use App\LoginLogger;
 use App\Jobs\Email;
+use App\NotificationSetting;
+
 
 class AuthenticateController extends Controller
 {
@@ -74,17 +76,18 @@ class AuthenticateController extends Controller
     }
     // if no errors are encountered we can return a JWT
     if(sizeof($result) > 0){
-      // $notifResult = NotificationSetting::where('account_id', '=', $result[0]['id'])->get();
-      // if(sizeof($notifResult) > 0){
-      //   if($notifResult[0]['email'] === "ON"){
-      //     // Notify via email
-      //     dispatch(new Email($result[0], 'login'));
-      //   }else if($notifResult[0]['sms'] === "ON"){
-      //     // Notify via SMS
-      //   }else if($notifResult[0]['fb_messenger'] === "ON"){
-      //     // Notify via FB Messenger
-      //   }
-      // }
+      $notifResult = NotificationSetting::where('account_id', '=', $result[0]['id'])->get();
+      if(sizeof($notifResult) > 0){
+        if($notifResult[0]['email'] === 1){
+          // Notify via email
+          // dispatch(new Email($result[0], 'login'));
+          app('App\Http\Controllers\EmailController')->loginEmail($result[0]['id']);
+        }else if($notifResult[0]['sms'] === 1){
+          // Notify via SMS
+        }else if($notifResult[0]['fb_messenger'] === 1){
+          // Notify via FB Messenger
+        }
+      }
         
     }else{
       //
