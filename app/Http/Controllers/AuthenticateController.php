@@ -62,9 +62,7 @@ class AuthenticateController extends Controller
       // $result = Account::where('username', '=', $data['username'])->get();
       $result = Account::whereRaw("BINARY username='".$data["username"]."'")->get();
     }
-    if(sizeof($result) > 0){
-      // app('App\Http\Controllers\NotificationSettingController')->manageNotification($result[0]['id']);
-    }
+    
     try {
       // verify the credentials and create a token for the user
       if (! $token = JWTAuth::attempt($credentials)) {
@@ -74,24 +72,11 @@ class AuthenticateController extends Controller
       // something went wrong
       return response()->json(['error' => 'could_not_create_token'], 500);
     }
-    // if no errors are encountered we can return a JWT
+
     if(sizeof($result) > 0){
-      $notifResult = NotificationSetting::where('account_id', '=', $result[0]['id'])->get();
-      if(sizeof($notifResult) > 0){
-        if($notifResult[0]['email_login'] === 1){
-          // Notify via email
-          // dispatch(new Email($result[0], 'login'));
-          app('App\Http\Controllers\EmailController')->loginEmail($result[0]['id']);
-        }else if($notifResult[0]['sms'] === 1){
-          // Notify via SMS
-        }else if($notifResult[0]['fb_messenger'] === 1){
-          // Notify via FB Messenger
-        }
-      }
-        
-    }else{
-      //
+      app('App\Http\Controllers\NotificationSettingController')->manageNotification($result[0]['id']);
     }
+    
     return response()->json(compact('token'));
   }
   public function deauthenticate(){
