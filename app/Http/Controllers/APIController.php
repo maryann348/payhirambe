@@ -679,19 +679,14 @@ class APIController extends Controller
   }
 
   public function retrieveDetailsOnLogin($result){
-    $accountId = $result['id'];
-    $result['account_information_flag'] = false;
-    $result['account_profile_flag'] = false;
-    $result['account_information'] = app('Increment\Account\Http\AccountInformationController')->getAccountInformation($accountId);
-    $result['account_profile'] = app('Increment\Account\Http\AccountProfileController')->getAccountProfile($accountId);
-    $result['notification_settings'] = app('App\Http\Controllers\NotificationSettingController')->getNotificationSettings($accountId);
-    $result['sub_account'] = app('Increment\Account\Http\SubAccountController')->retrieveByParams('member', $accountId);
-
-    if($result['sub_account'] != null){
-      $admin = $result['sub_account']['account_id'];
-      $result['sub_account']['merchant'] = app('Increment\Imarket\Merchant\Http\MerchantController')->getByParams('account_id', $admin);
+    $result = app('Increment\Account\Http\AccountController')->getByParamsWithColumns($accountId, ['username', 'code']);
+    if($result){
+      $result['information'] = app('Increment\Account\Http\AccountInformationController')->getByParamsWithColumns($accountId, ['first_name', 'middle_name', 'last_name']);;
+      $result['profile'] = app('Increment\Account\Http\AccountProfileController')->getByParamsWithColumns($accountId, ['url']);
+      return $result;
+    }else{
+      return null;
     }
-    return $result;
   }
 
 
