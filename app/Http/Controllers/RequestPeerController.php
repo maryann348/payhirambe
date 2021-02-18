@@ -79,6 +79,33 @@ class RequestPeerController extends APIController
     return sizeof($result) > 0 ? $result[0] : null;
   }
 
+  public function retrieveItem(Request $request){
+    $data = $request->all();
+    $result = null;
+    if($data['account_code'] == $data['account_request_code']){
+      $result = RequestPeer::where('request_id', '=', $data['request_id'])->get();
+    }else{
+      $accountId = $this->retriveAccountIdByCode($data['account_code']);
+      $result = RequestPeer::where('request_id', '=', $data['request_id'])->where('account_id', '=', $accountId)->get();
+    }
+    $i = 0;
+    $status = false;
+    foreach ($result as $key) {
+      $result[$i]['account'] = $this->retrieveAccountDetails($key->account_id);
+      $result[$i]['distance'] = '12km';
+      $result[$i]['rating'] = app($this->ratingClass)->getRatingByPayload('profile', $result[$i]['account_id']);
+      if($status == false && $key->status == 'approved'){
+        $status = true;
+      }
+      if($key->status == 'approved'){
+        //view message thread
+      }
+      $i++;
+    }
+    $this->response['data'] = $result;
+    return $this->response();
+  }
+
   public function getByParams($column, $value){
     $result = RequestPeer::where($column, '=', $value)->get();
     $i = 0;
