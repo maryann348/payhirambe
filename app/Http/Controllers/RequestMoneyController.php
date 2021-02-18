@@ -606,4 +606,9 @@ class RequestMoneyController extends APIController
       }
       return null;
     }
+
+    public function getByParamsWithColumns($column, $value, $columns){
+      $result = RequestMoney::where($column, '=', $value)->get($columns);
+      return (sizeof($result) > 0) ? $result[0] : null;
+    }
 }

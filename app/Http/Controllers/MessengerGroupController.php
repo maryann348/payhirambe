@@ -111,7 +111,7 @@ class MessengerGroupController extends APIController
       if(sizeof($result) > 0){
         $i = 0;
         foreach ($result as $key) {
-          $result[$i] = $this->manageResult($result[$i], $accountId, $key['title']);
+          $result[$i] = $this->manageResult($key['title']);
           $existed[] = $result[$i]['account_id'];
           if($key['title'] == $code){
             $active = $i;
@@ -167,24 +167,11 @@ class MessengerGroupController extends APIController
       return sizeof($result) > 0 ? $result[0] : null;
     }
 
-    public function manageResult($result, $accountId, $title){
+    public function manageResult($code){
       // dd($result);
-      $result['id'] = intval($result['id']);
-      $result['account_id'] = intval($result['account_id']);
-      $result['account_details'] = $this->retrieveUserInfoLimited($result['account_id']);
-      $result['created_at_human'] = Carbon::createFromFormat('Y-m-d H:i:s', $result['updated_at'] != null ?  $result['updated_at'] : $result['created_at'])->copy()->tz($this->response['timezone'])->format('F j, Y h:i A');
-      $result['request'] = null;
-      if($result['payload'] == 'request'){
-        $request = app($this->requestClass)->getByParams('code', $title);
-        $partner = $request ? app($this->requestPeerClass)->getApprovedByParamsPeersOnly('request_id', $result['id']) : null;
-        if($request){
-          $request['partner'] = $partner;
-        }
-        $result['request'] = $request;
-      }
-      $result['thread'] = $title;
-      $result['total_unread_messages'] = app($this->messengerMessagesClass)->getTotalUnreadMessages($result['id'], $accountId);
-      $result['new'] = false;
+      $request = app('App\Http\Controllers\RequestMoneyController')->getByParamsWithColumns('code', $code, ['money', 'currency']);
+      $result['amount']   = 
+      $result['currency'] = 
       unset($result['updated_at']);
       unset($result['created_at']);
       unset($result['deleted_at']);
