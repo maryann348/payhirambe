@@ -230,7 +230,7 @@ class MessengerGroupController extends APIController
     }
 
     public function getByParams($column, $value){
-      $result = MessengerMember::where($column, '=', $value)->get();
+      $result = MessengerGroup::where($column, '=', $value)->get();
       return sizeof($result) > 0 ? $result[0] : null;
     }
 

@@ -146,7 +146,7 @@ class RequestMoneyController extends APIController
     }
 
     public function generateCode(){
-      $code = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 32);
+      $code = 'req_'.substr(str_shuffle($this->codeSource), 0, 60);
       $codeExist = RequestMoney::where('code', '=', $code)->get();
       if(sizeof($codeExist) > 0){
         $this->generateCode();
