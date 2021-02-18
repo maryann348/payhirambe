@@ -679,14 +679,10 @@ class APIController extends Controller
   }
 
   public function retrieveDetailsOnLogin($result){
-    $result = app('Increment\Account\Http\AccountController')->getByParamsWithColumns($accountId, ['username', 'code']);
-    if($result){
-      $result['information'] = app('Increment\Account\Http\AccountInformationController')->getByParamsWithColumns($accountId, ['first_name', 'middle_name', 'last_name']);;
-      $result['profile'] = app('Increment\Account\Http\AccountProfileController')->getByParamsWithColumns($accountId, ['url']);
-      return $result;
-    }else{
-      return null;
-    }
+    $accountId = $result['id'];
+    $result['information'] = app('Increment\Account\Http\AccountInformationController')->getByParamsWithColumns($accountId, ['first_name', 'middle_name', 'last_name']);;
+    $result['profile'] = app('Increment\Account\Http\AccountProfileController')->getByParamsWithColumns($accountId, ['url']);
+    return $result;
   }
 
 
