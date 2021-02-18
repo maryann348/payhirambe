@@ -438,7 +438,8 @@ class RequestMoneyController extends APIController
     	return response()->json(array(
         'data' => sizeof($response) > 0 ? $response : null,
         'size' => sizeof($size),
-        'ledger' => app($this->ledgerClass)->retrievePersonal($data['account_id']),
+        // 'ledger' => app($this->ledgerClass)->retrievePersonal($data['account_id']),
+        'ledger' => null,
         'locations' => $accountLocation
       ));
     }
