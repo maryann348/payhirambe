@@ -428,6 +428,7 @@ class RequestMoneyController extends APIController
             $result[$i]['invested'] = $invested['size'];
             $result[$i]['billing_per_month_human'] = $this->billingPerMonth($result[$i]['billing_per_month']);
             $result[$i]['coupon'] = null;
+            unset($result[$i]['account_id']);
             $response[] = $result[$i];
           }  
           $i++;
