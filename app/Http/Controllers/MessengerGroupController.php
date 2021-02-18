@@ -161,10 +161,11 @@ class MessengerGroupController extends APIController
 
     public function manageResult($result){
       // dd($result);
-      $request = app('App\Http\Controllers\RequestMoneyController')->getByParamsWithColumns('code', $result['title'], ['amount', 'currency', 'status']);
+      $request = app('App\Http\Controllers\RequestMoneyController')->getByParamsWithColumns('code', $result['title'], ['amount', 'currency', 'status', 'type']);
       $result['amount']   = $request ? $request['amount'] : null;
       $result['currency'] = $request ? $request['currency'] : null;
       $result['status'] = $request ? $request['status'] : null;
+      $result['type'] = $request ? $request['type'] : null;
       unset($result['updated_at']);
       unset($result['created_at']);
       unset($result['deleted_at']);
