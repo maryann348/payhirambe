@@ -352,7 +352,7 @@ class RequestMoneyController extends APIController
         // dd($result);
       }else{
         if(!isset($data['route_params'])){
-          $result = DB::table('request_locations as T1')
+          $result = DB::table('locations as T1')
             ->join('requests as T2', 'T2.id', '=', 'T1.request_id')
             ->where('T2.status', '=', 0)
             ->where('T1.country', '=', $accountLocation['country'])
@@ -368,7 +368,7 @@ class RequestMoneyController extends APIController
           // dd($result);
           $result = json_decode($result, true);
 
-          $size = DB::table('request_locations as T1')
+          $size = DB::table('locations as T1')
             ->join('requests as T2', 'T2.id', '=', 'T1.request_id')
             ->where('T2.status', '=', 0)
             ->where('T1.country', '=', $accountLocation['country'])
@@ -379,7 +379,7 @@ class RequestMoneyController extends APIController
             ->select('T2.*')
             ->get();
         }else{
-          $result = DB::table('request_locations as T1')
+          $result = DB::table('locations as T1')
             ->join('requests as T2', 'T2.id', '=', 'T1.request_id')
             ->where('T2.id', '=', $data['route_params'])
             ->where('T2.status', '=', 0)
@@ -396,7 +396,7 @@ class RequestMoneyController extends APIController
           // dd($result);
           $result = json_decode($result, true);
 
-          $size = DB::table('request_locations as T1')
+          $size = DB::table('locations as T1')
             ->join('requests as T2', 'T2.id', '=', 'T1.request_id')
             ->where('T2.id', '=', $data['route_params'])
             ->where('T2.status', '=', 0)
@@ -428,6 +428,7 @@ class RequestMoneyController extends APIController
             $result[$i]['invested'] = $invested['size'];
             $result[$i]['billing_per_month_human'] = $this->billingPerMonth($result[$i]['billing_per_month']);
             $result[$i]['coupon'] = null;
+            $result[$i]['peer_flag'] = app('App\Http\Controllers\RequestPeerController')->checkIfExist($result[$i]['id'], $data['account_id']); 
             unset($result[$i]['account_id']);
             $response[] = $result[$i];
           }  
