@@ -86,7 +86,9 @@ class RequestPeerController extends APIController
       $result = RequestPeer::where('request_id', '=', $data['request_id'])->get();
     }else{
       $accountId = $this->retriveAccountIdByCode($data['account_code']);
-      $result = RequestPeer::where('request_id', '=', $data['request_id'])->where('account_id', '=', $accountId)->get();
+      if($accountId){
+        $result = RequestPeer::where('request_id', '=', $data['request_id'])->where('account_id', '=', $accountId)->get();
+      }
     }
     $i = 0;
     $status = false;

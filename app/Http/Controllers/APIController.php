@@ -697,7 +697,6 @@ class APIController extends Controller
 
   public function retriveAccountIdByCode($accountCode){
     $result =  app('Increment\Account\Http\AccountController')->getAccountIdByParamsWithColumns($accountCode, ['id']);
-    echo json_encode($result);
     return $result ? $result['id'] : null;
   }
 
