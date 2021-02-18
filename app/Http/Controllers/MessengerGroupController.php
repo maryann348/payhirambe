@@ -94,7 +94,6 @@ class MessengerGroupController extends APIController
 
     public function retrieve(Request $request){
       $data = $request->all();
-      $code = $data['code'];
       $accountId = $data['account_id'];
       $existed = array();
       $flag = false;
@@ -111,7 +110,7 @@ class MessengerGroupController extends APIController
       if(sizeof($result) > 0){
         $i = 0;
         foreach ($result as $key) {
-          $result[$i] = $this->manageResult($key['title']);
+          $result[$i] = $this->manageResult($result[$i]);
           $i++;
         }
       }
@@ -160,9 +159,9 @@ class MessengerGroupController extends APIController
       return sizeof($result) > 0 ? $result[0] : null;
     }
 
-    public function manageResult($code){
+    public function manageResult($result){
       // dd($result);
-      $request = app('App\Http\Controllers\RequestMoneyController')->getByParamsWithColumns('code', $code, ['amount', 'currency']);
+      $request = app('App\Http\Controllers\RequestMoneyController')->getByParamsWithColumns('code', $result['title'], ['amount', 'currency']);
       $result['amount']   = $request ? $request['amount'] : null;
       $result['currency'] = $request ? $request['currency'] : null;
       unset($result['updated_at']);
