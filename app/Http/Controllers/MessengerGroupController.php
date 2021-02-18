@@ -112,13 +112,6 @@ class MessengerGroupController extends APIController
         $i = 0;
         foreach ($result as $key) {
           $result[$i] = $this->manageResult($key['title']);
-          $existed[] = $result[$i]['account_id'];
-          if($key['title'] == $code){
-            $active = $i;
-            $result[$i]['flag'] = true;
-          }else{
-            $result[$i]['flag'] = false;
-          }
           $i++;
         }
       }
